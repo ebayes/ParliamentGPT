@@ -31,7 +31,7 @@ npm install requirements.txt
 4. Create a **.env** file with your API key:
 
 ```bash
-OPENAI_API_KEY=changeme
+OPENAI_API_KEY=<insert>
 ```
 
 5. Ready 🥳, now run:
