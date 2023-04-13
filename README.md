@@ -1,5 +1,5 @@
-# ParliamentGPT
-🗳 A suite of tools that helps lawmakers manage casework.
+# 🏛 ParliamentGPT
+An open-source suite of tools to help lawmakers and non-profits improve productivity.
 
 ## 🎉 Features
 
