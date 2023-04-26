@@ -270,7 +270,7 @@ with tab1:
 
         tone = st.multiselect('Select a tone:', ['Formal', 'Sympathetic', 'Informal', 'Pirate'], ['Formal'])
 
-        word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 300)
+        word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 250)
 
         doc_ID = st.text_input(label="Google Docs ID:", value = "https://docs.google.com/document/d/1qhd6sbq5aTeBz3WGATrgyEZ1X456mWsz3ZsJywngx4Q/edit") 
         if doc_ID is not None:
