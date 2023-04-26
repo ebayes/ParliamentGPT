@@ -36,8 +36,12 @@ aws_access_key_id=<insert>
 aws_secret_access_key=<insert>
 
 ```
+5. Create a credentials file:
 
-5. Ready 🥳, now run:
+```
+credentials.json
+```
+6. Ready 🥳, now run:
 
 ```bash
 # Run the project:
