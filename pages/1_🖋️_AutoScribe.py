@@ -152,7 +152,7 @@ def generate_output(index, query, tone, word_count):
     chain = LLMChain(llm=llm, prompt=PROMPT)
 
     docs = index.similarity_search(query, k=1)
-    inputs = [{"context": doc.page_content, "letter": query, "tone": ', '.join(tone), "word_count": word_count} for doc in docs]
+    inputs = [{"context": doc.page_content, "letter": query, "tone": ', '.join(tone), "word_count": str(word_count)} for doc in docs]
     output = chain.apply(inputs)[0]['text']
     return output
 
