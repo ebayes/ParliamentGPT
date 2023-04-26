@@ -60,7 +60,7 @@ st.set_page_config(layout="wide", page_icon="🏛", page_title="ParliamentGPT")
 st.title("🖋️ AutoScribe")
 st.markdown(
     """
-    AutoScribe reads letters and drafts responses based on your FAQs, all in one click! Simply upload your FAQs and the correspondence you are responding to and click generate. You can even download the output in your own template by creating a Google Docs template and sharing it with parliamentgpt@gmail.com. Just don't forget to proofread and edit before downloading!
+    AutoScribe reads letters and drafts responses based on your FAQs, all in one click! Simply upload your FAQs and the correspondence you are responding to and click generate. You can even download the output in your own template by creating a Google Docs template and sharing it with parliamentgpt@gmail.com. Just don't forget to proofread and edit (AutoScribe is in beta so sometimes gets things wrong!)
     """
 )
 
