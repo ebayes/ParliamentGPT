@@ -112,7 +112,7 @@ def process_file(uploaded_file):
 
             
 
-uploaded_file = st.file_uploader("Choose a file")
+uploaded_file = st.file_uploader("Upload your file:")
 
 if uploaded_file is not None and st.session_state.uploaded_file_name != uploaded_file.name:
     print("okay yes")
@@ -131,7 +131,7 @@ else:
     print("Bye")
 
 def get_text():
-    input_text = st.text_input("You: ", value="", key="input")
+    input_text = st.text_input("Prompt: ", value="", key="input")
     return input_text
 
 if st.session_state["file_uploaded"]:
