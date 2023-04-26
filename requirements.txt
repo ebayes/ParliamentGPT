@@ -1,5 +1,4 @@
 boto3
-datetime
 docx
 fitz
 google-api-python-client
@@ -11,7 +10,5 @@ openai
 Pillow
 pdf2image
 PyPDF2
-re
 streamlit
-tempfile
 tiktoken
