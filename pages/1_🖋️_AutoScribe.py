@@ -316,5 +316,17 @@ with tab1:
 with tab2:
     st.markdown(
         """
+        1. ℹ️ **Upload your FAQs.** Here is a [sample](https://docs.google.com/document/d/1qZ3mjCUtM_DudBfPx1hZg6c8-G_5yF0YmTOBRerpcag/edit) of what this could look like. You don't need to worry about copying and pasting specific FAQs depending on the topic, AutoScribe's clever AI will find the right FAQ from the whole document.
+        2. 📬 **Upload the letter you are responding to.** Here is a [sample](https://docs.google.com/document/d/1P9bmBsapYkklPTa3XX8wRuYeeuUgnGq8XUvL_IX3PI0/edit) of what this could look like. Autoscribe can extract text from images or scanned, even if it's handwritten!
+        3. 🎛 **Adjust the tone and word count.** You can tweak the settings using the dropdown boxes and slider.
+        4. 🤖 **Click generate!**  Your letter will be displayed in the output box on the right.
+        5. 🤓 **Proofread and edit**. Don't forget that AutoScribe is just a tool, and sometimes it gets things wrong! Don't forget to proofread and edit your output before using it.
+        
+        [Optional] If you would like to download the output in your own template, you can follow the additional steps below.
+        1. 📝 **Create a letter template in Google Docs.** The template must include placeholders {{letter_content}}, {{respondent_address}}, {{date}} where you want the content, respondent's address and date to go. For an example, see [here](https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit).
+        2. 🔖 **Share the Google Doc with [ParliamentGPT@gmail.com](parliamentgpt@gmail.com).** Click Share in the top right of the Google Doc to share. It doesn't matter what access you give it (e.g. view or edit) however it must be possible to make a copy of the document.
+        3. 📎 **Paste a link to your template in the box labeled "template".** Click Share in the top right of the Google Doc to get a link, or just copy and paste the url from your browser. 
+        
+        If you are having any issues, read through the instructions again carefully. If you still can't solve your problem, email [parliamentgpt@gmail.com](parliamentgpt@gmail.com) and we'll get back to you.
         """
     )
