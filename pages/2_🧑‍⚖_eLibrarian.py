@@ -10,6 +10,7 @@ from langchain.embeddings import OpenAIEmbeddings
 import pickle
 import openai
 import io
+import os
 
 # API keys and creds
 openai.api_key=st.secrets["OPENAI_API_KEY"]
