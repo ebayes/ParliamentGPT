@@ -51,8 +51,9 @@ credentials = service_account.Credentials.from_service_account_info(
         "https://www.googleapis.com/auth/documents",
     ],
 )
-conn = connect(credentials=credentials)
 
+drive_service = build('drive', 'v3', credentials=credentials)
+docs_service = build('docs', 'v1', credentials=credentials)
 
 # page title
 st.set_page_config(layout="wide", page_icon="🏛", page_title="ParliamentGPT")
@@ -179,14 +180,15 @@ def generate_address(letter):
 def generate_doc(doc_ID, letter, output):
     c_address = generate_address(letter)
 
+    # Use the global drive_service and docs_service objects
+    global drive_service, docs_service
+
     # Use the Google Drive API to create a copy of the document
-    drive_service = build('drive', 'v3', credentials=creds)
     copy_request = drive_service.files().copy(fileId=doc_ID)
     copied_doc = copy_request.execute()
     document_id = copied_doc['id']
 
     # Use the Google Docs API to retrieve the copied document
-    docs_service = build('docs', 'v1', credentials=creds)
     doc = docs_service.documents().get(documentId=document_id).execute()
 
     # Define the text to replace and its replacement
@@ -223,7 +225,7 @@ def generate_doc(doc_ID, letter, output):
     doc.save(doc_bytes)
     doc_bytes.seek(0)
 
-    return doc_bytes 
+    return doc_bytes
 
 def extract_google_docs_id(doc_ID: str) -> str:
     pattern = r'd/([\w-]+)/'
