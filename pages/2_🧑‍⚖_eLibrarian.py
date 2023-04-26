@@ -9,13 +9,16 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 import pickle
 import os
+from dotenv import load_dotenv
+import openai
 
-os.environ["OPENAI_API_KEY"] = "" # insert api key
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 st.set_page_config(layout="centered", page_icon="🏛", page_title="ParliamentGPT")
-st.title("📰 Chat with legislation")
+st.title("🧑‍⚖ eLibrarian")
 st.write(
-    "This app helps governments and non-profits ask questiona bout legislation and reports!"
+    "eLibrarian helps you ask questions about legislation or reports. Simply upload a .pdf and eLibrarian will train a custom AI chatbot that can answer questions about it in real time. No more ctrl-F!"
 )
 
 
