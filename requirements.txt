@@ -10,7 +10,7 @@ openai
 Pillow
 pdf2image
 PyPDF2
-pdfminer
+pdfminer.six
 streamlit
 streamlit-chat
 tiktoken
