@@ -40,14 +40,9 @@ if "doc_ID" not in st.session_state:
 if "generated_output" not in st.session_state:
     st.session_state["generated_output"] = ""
     
-# API keys
+# API keys and creds
 openai.api_key=st.secrets["OPENAI_API_KEY"]
-st.write("aws_access_key_id =", st.secrets["AWS_ACCESS_KEY_ID"])
-st.write("aws_secret_access_key =", st.secrets["AWS_SECRET_ACCESS_KEY"])
-st.write("aws_default_region =", st.secrets["AWS_DEFAULT_REGION"])
-
-# creds
-client = boto3.client('textract',region_name=aws_default_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+client = boto3.client('textract', region_name=st.secrets["AWS_DEFAULT_REGION"], aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"], aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"])
 
 credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"],
