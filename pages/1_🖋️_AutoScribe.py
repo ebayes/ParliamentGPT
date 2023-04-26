@@ -5,7 +5,7 @@ import tempfile
 from datetime import date
 
 import boto3
-import docx
+from docx import Document
 import fitz
 import openai
 import streamlit as st
@@ -114,7 +114,7 @@ def convert_to_text(file):
             if file_type == '.docx':
                 text = docx2txt.process(file)
             elif file_type == '.doc':
-                doc = docx.Document(file)
+                doc = Document(file)
                 text = "\n".join([para.text for para in doc.paragraphs])
             else:
                 text = file.read()
@@ -229,7 +229,7 @@ def generate_doc(doc_ID, letter, output):
     drive_service.files().delete(fileId=document_id).execute()
 
     # Save the Word document content in memory
-    doc = docx.Document(io.BytesIO(file_content))
+    doc = Document(io.BytesIO(file_content))
     doc_bytes = io.BytesIO()
     doc.save(doc_bytes)
     doc_bytes.seek(0)
