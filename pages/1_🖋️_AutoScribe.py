@@ -5,7 +5,7 @@ import tempfile
 from datetime import date
 
 import boto3
-from docx import Document
+from docx.document import Document
 import fitz
 import openai
 import streamlit as st
