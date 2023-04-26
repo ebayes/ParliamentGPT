@@ -41,20 +41,28 @@ if "doc_ID" not in st.session_state:
 
 if "generated_output" not in st.session_state:
     st.session_state["generated_output"] = ""
+    
+# API keys
+st.write("OPENAI_API_KEY =", st.secrets["OPENAI_API_KEY"])
+st.write("aws_access_key_id =", st.secrets["AWS_ACCESS_KEY_ID"])
+st.write("aws_secret_access_key =", st.secrets["AWS_SECRET_ACCESS_KEY"])
+st.write("aws_default_region =", st.secrets["AWS_DEFAULT_REGION"])
 
+# creds
+client = boto3.client('textract',region_name=aws_default_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 
-load_dotenv()
-
-# api keys
 openai.api_key = os.getenv("OPENAI_API_KEY")
 aws_access_key_id = os.getenv("aws_access_key_id")
 aws_secret_access_key = os.getenv("aws_secret_access_key")
 
-# creds
-client = boto3.client('textract',region_name='us-east-1',aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
-SCOPES = ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive']
-SERVICE_ACCOUNT_FILE = 'credentials.json'
-creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=[
+        "https://www.googleapis.com/auth/drive",
+        "https://www.googleapis.com/auth/documents",
+    ],
+)
+conn = connect(credentials=credentials)
 
 
 # page title
