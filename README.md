@@ -1,5 +1,5 @@
 # 🏛 ParliamentGPT
-An open-source suite of tools to help lawmakers and non-profits improve productivity.
+An suite of GPT-based tools to help lawmakers and non-profits.
 
 ## 🎉 Features
 
