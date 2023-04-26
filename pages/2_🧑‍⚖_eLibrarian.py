@@ -14,6 +14,7 @@ import openai
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
+#os.environ["OPENAI_API_KEY"] = "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"
 
 st.set_page_config(layout="centered", page_icon="🏛", page_title="ParliamentGPT")
 st.title("🧑‍⚖ eLibrarian")
