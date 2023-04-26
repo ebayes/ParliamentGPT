@@ -319,7 +319,7 @@ with tab2:
         
         [Optional] If you would like to download the output in your own template, you can follow the additional steps below.
         1. 📝 **Create a letter template in Google Docs.** The template must include placeholders {{letter_content}}, {{respondent_address}}, {{date}} where you want the content, respondent's address and date to go. For an example, see [here](https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit).
-        2. 🔖 **Share the Google Doc with [ParliamentGPT@gmail.com](parliamentgpt@gmail.com).** Click Share in the top right of the Google Doc to share. It doesn't matter what access you give it (e.g. view or edit) however it must be possible to make a copy of the document.
+        2. 🔖 **Share the Google Doc with [ParliamentGPT@gmail.com](parliamentgpt@gmail.com).** Click Share in the top right of the Google Doc to share. Also change access to that "anyone with the link can view."
         3. 📎 **Paste a link to your template in the box labeled "template".** Click Share in the top right of the Google Doc to get a link, or just copy and paste the url from your browser. 
         
         If you are having any issues, read through the instructions again carefully. If you still can't solve your problem, email [parliamentgpt@gmail.com](parliamentgpt@gmail.com) and we'll get back to you.
