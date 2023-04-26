@@ -311,7 +311,7 @@ with tab1:
 with tab2:
     st.markdown(
         """
-        1. ℹ️ **Upload your FAQs.** Here is a [sample](https://docs.google.com/document/d/1qZ3mjCUtM_DudBfPx1hZg6c8-G_5yF0YmTOBRerpcag/edit) of what this could look like. You don't need to worry about copying and pasting specific FAQs depending on the topic, AutoScribe's clever AI will find the right FAQ from the whole document.
+        1. ℹ️ **Upload your FAQs.** Here is a [sample](https://docs.google.com/document/d/1qZ3mjCUtM_DudBfPx1hZg6c8-G_5yF0YmTOBRerpcag/edit) of what this could look like. You don't need to worry about copying and pasting specific FAQs depending on the topic, AutoScribewill find the right FAQ from the whole document.
         2. 📬 **Upload the letter you are responding to.** Here is a [sample](https://docs.google.com/document/d/1P9bmBsapYkklPTa3XX8wRuYeeuUgnGq8XUvL_IX3PI0/edit) of what this could look like. Autoscribe can extract text from images or scanned, even if it's handwritten!
         3. 🎛 **Adjust the tone and word count.** You can tweak the settings using the dropdown boxes and slider.
         4. 🤖 **Click generate!**  Your letter will be displayed in the output box on the right.
