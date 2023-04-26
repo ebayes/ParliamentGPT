@@ -13,4 +13,3 @@ PyPDF2
 streamlit
 streamlit-chat
 tiktoken
-pickle
