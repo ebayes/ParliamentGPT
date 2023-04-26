@@ -11,6 +11,6 @@ Pillow
 pdf2image
 PyPDF2
 streamlit
-streamlit_chat
+streamlit-chat
 tiktoken
 pickle
