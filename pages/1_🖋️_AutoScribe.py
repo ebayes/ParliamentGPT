@@ -10,7 +10,6 @@ import openai
 import streamlit as st
 import tiktoken
 from PIL import Image
-from dotenv import load_dotenv
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from pdf2image import convert_from_path
@@ -42,17 +41,13 @@ if "generated_output" not in st.session_state:
     st.session_state["generated_output"] = ""
     
 # API keys
-st.write("OPENAI_API_KEY =", st.secrets["OPENAI_API_KEY"])
+openai.api_key=st.secrets["OPENAI_API_KEY"]
 st.write("aws_access_key_id =", st.secrets["AWS_ACCESS_KEY_ID"])
 st.write("aws_secret_access_key =", st.secrets["AWS_SECRET_ACCESS_KEY"])
 st.write("aws_default_region =", st.secrets["AWS_DEFAULT_REGION"])
 
 # creds
 client = boto3.client('textract',region_name=aws_default_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
-
-openai.api_key = os.getenv("OPENAI_API_KEY")
-aws_access_key_id = os.getenv("aws_access_key_id")
-aws_secret_access_key = os.getenv("aws_secret_access_key")
 
 credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"],
