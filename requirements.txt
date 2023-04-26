@@ -1,5 +1,5 @@
 boto3
-docx
+python-docx
 fitz
 google-api-python-client
 google-auth
