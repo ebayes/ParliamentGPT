@@ -1,5 +1,4 @@
 boto3
-python-dotenv
 python-docx
 google-api-python-client
 google-auth
