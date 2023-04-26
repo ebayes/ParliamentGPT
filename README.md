@@ -28,15 +28,18 @@ git clone git@github.com:YOU_USER/ParliamentGPT.git
 npm install requirements.txt
 ```
 
-4. Create a **.env** file with your API key:
+4. Create a **.env** file with your API keys:
 
 ```bash
 OPENAI_API_KEY=<insert>
+aws_access_key_id=<insert>
+aws_secret_access_key=<insert>
+
 ```
 
 5. Ready 🥳, now run:
 
 ```bash
 # Run the project:
-streamlit run Home.py
+streamlit run 👋_Home_.py
 ```
