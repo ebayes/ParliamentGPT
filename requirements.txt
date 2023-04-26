@@ -15,4 +15,5 @@ streamlit
 streamlit-chat
 tiktoken
 unstructured
-faiss
+faiss-cpu
+
