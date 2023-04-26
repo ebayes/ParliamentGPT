@@ -25,7 +25,7 @@ git clone git@github.com:YOU_USER/ParliamentGPT.git
 3. Install dependencies:
 
 ```bash
-npm install requirements.txt
+npm install packages.txt
 ```
 
 4. Create a **.env** file with your API keys:
