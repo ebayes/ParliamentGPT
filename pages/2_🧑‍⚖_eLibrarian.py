@@ -65,7 +65,7 @@ def get_chain(vectorstore):
     qa_chain = ChatVectorDBChain.from_llm(
         llm=llm,
         vectorstore=vectorstore,
-        template=QA_PROMPT,
+        qa_prompt=QA_PROMPT,
         condense_question_prompt=CONDENSE_QUESTION_PROMPT,
     )
     return qa_chain
