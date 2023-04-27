@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_chat import message
-from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import ChatVectorDBChain
 from langchain.llms import OpenAI
 from langchain.prompts.prompt import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -62,10 +62,10 @@ def embed_doc(filename):
 
 def get_chain(vectorstore):
     llm = OpenAI(temperature=0)
-    qa_chain = ConversationalRetrievalChain.from_llm(
-        llm,
-        vectorstore,
-        qa_prompt=QA_PROMPT,
+    qa_chain = ChatVectorDBChain.from_llm(
+        llm-llm,
+        vectorstore=vectorstore,
+        template=QA_PROMPT,
         condense_question_prompt=CONDENSE_QUESTION_PROMPT,
     )
     return qa_chain
