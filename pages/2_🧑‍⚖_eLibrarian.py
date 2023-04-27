@@ -112,7 +112,7 @@ if st.session_state["file_uploaded"]:
 
 if user_input:
     docs=vectorstore.similarity_search(user_input)
-    output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, QA_PROMPT=QA_PROMPT, CONDENSE_QUESTION_PROMPT=CONDENSE_QUESTION_PROMPT, template=_template)
+    output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, CONDENSE_QUESTION_PROMPT=QA_PROMPT)
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
 
