@@ -29,14 +29,6 @@ if "past" not in st.session_state:
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
 
-_template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
-You can assume the question about the uploaded document.
-Chat History:
-{chat_history}
-Follow Up Input: {question}
-Standalone question:"""
-CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(_template)
-
 template = """You are an AI assistant for answering questions about legislation and policy reports.
 You are given the following extracted parts of a long document and a question. Provide a conversational answer.
 If you don't know the answer, just say "Hmm, I'm not sure." Don't try to make up an answer.
@@ -65,8 +57,7 @@ def get_chain(vectorstore):
     qa_chain = ChatVectorDBChain.from_llm(
         llm=llm,
         vectorstore=vectorstore,
-        qa_prompt=QA_PROMPT,
-        condense_question_prompt=CONDENSE_QUESTION_PROMPT,
+        condense_question_prompt=QA_PROMPT,
     )
     return qa_chain
     
@@ -99,7 +90,7 @@ if uploaded_file is not None:
     if user_input and st.session_state["file_uploaded"]:
         with st.spinner("Drafting response..."):
             docs=vectorstore.similarity_search(user_input)
-            output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, QA_PROMPT=QA_PROMPT, CONDENSE_QUESTION_PROMPT=CONDENSE_QUESTION_PROMPT).strip()
+            output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, CONDENSE_QUESTION_PROMPT=QA_PROMPT).strip()
             st.session_state.past.append(user_input)
             st.session_state.generated.append(output)
 
