@@ -1,18 +1,13 @@
 import streamlit as st
 from streamlit_chat import message
-from langchain.chains import ConversationChain, ChatVectorDBChain
+from langchain.chains import ChatVectorDBChain
 from langchain.llms import OpenAI
 from langchain.prompts.prompt import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import UnstructuredFileLoader
-from langchain.vectorstores.faiss import FAISS
+from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
-import pickle
-import openai
-import io
-import os
 
-# API keys and creds
 openai.api_key=st.secrets["OPENAI_API_KEY"]
 
 st.set_page_config(layout="centered", page_icon="🏛", page_title="ParliamentGPT")
@@ -21,37 +16,17 @@ st.write(
     "eLibrarian helps you ask questions about legislation or reports. Simply upload a .pdf and eLibrarian will train a custom AI chatbot that can answer questions about it in real time. No more ctrl-F!"
 )
 
-def embed_doc(filename):
-    if len(os.listdir(".")) > 0:
-        loader = UnstructuredFileLoader(filename)
-        raw_documents = loader.load()
-        print(len(raw_documents))
+if "file_uploaded" not in st.session_state:
+    st.session_state["file_uploaded"] = False
 
-        # Split text
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=0,
-            length_function=len
-        )
-        print("111")
-        documents = text_splitter.split_documents(raw_documents)
+if "uploaded_file_name" not in st.session_state:
+    st.session_state.uploaded_file_name = ""
 
-        # Load Data to vectorstore
-        embeddings = OpenAIEmbeddings()
-        print("222")
-        vectorstore = FAISS.from_documents(documents, embeddings)
-        print("333")
+if "past" not in st.session_state:
+    st.session_state["past"] = []
 
-        # Save vectorstore to memory
-        vectorstore_buffer = io.BytesIO()
-        pickle.dump(vectorstore, vectorstore_buffer)
-        vectorstore_buffer.seek(0)
-        return vectorstore_buffer
-
-
-if 'vectorstore_buffer' not in st.session_state:
-    st.session_state['vectorstore_buffer'] = None
-
+if "generated" not in st.session_state:
+    st.session_state["generated"] = []
 
 _template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
 You can assume the question about the uploaded document.
@@ -72,6 +47,17 @@ Question: {question}
 Answer in Markdown:"""
 QA_PROMPT = PromptTemplate(template=template, input_variables=["question", "context"])
 
+def embed_doc(filename):
+    loader = UnstructuredFileLoader(filename)
+    raw_documents = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+        chunk_overlap=0,
+    )
+    documents = text_splitter.split_documents(raw_documents)
+    embeddings = OpenAIEmbeddings()
+    vectorstore = Chroma.from_documents(documents, embeddings)
+    return vectorstore
 
 def get_chain(vectorstore):
     llm = OpenAI(temperature=0)
@@ -82,77 +68,41 @@ def get_chain(vectorstore):
         condense_question_prompt=CONDENSE_QUESTION_PROMPT,
     )
     return qa_chain
-
-if "file_uploaded" not in st.session_state:
-    st.session_state["file_uploaded"] = False
-
-if "uploaded_file_name" not in st.session_state:
-    st.session_state.uploaded_file_name = ""
-
-if "past" not in st.session_state:
-    st.session_state["past"] = []
-
-if "generated" not in st.session_state:
-    st.session_state["generated"] = []
     
 def process_file(uploaded_file):
-    if uploaded_file is not None:
-        print("yes")
-    else:
-        print("no")
-    print("here")
     with open(uploaded_file.name,"wb") as f:
         f.write(uploaded_file.getbuffer())
         print(uploaded_file.name)
         st.write("File Uploaded successfully")
         
         with st.spinner("Document is being processed..."):
-            st.session_state['vectorstore_buffer'] = embed_doc(uploaded_file.name)
+            embed_doc(uploaded_file.name)
             st.session_state["file_uploaded"] = True
+    return uploaded_file.name  # Add this line
 
-
-            
-
-uploaded_file = st.file_uploader("Upload your file:")
-
-if uploaded_file is not None and st.session_state.uploaded_file_name != uploaded_file.name:
-    print("okay yes")
-    print(type(st.session_state.uploaded_file_name))
-    print(st.session_state.uploaded_file_name)
-    st.session_state.uploaded_file_name = uploaded_file.name
-    print("then")
-    print(st.session_state.uploaded_file_name)
-    process_file(uploaded_file)     
-
-if st.session_state['vectorstore_buffer']:
-    st.session_state['vectorstore_buffer'].seek(0)
-    vectorstore = pickle.load(st.session_state['vectorstore_buffer'])
-    chain = get_chain(vectorstore)
-else:
-    print("Bye")
 
 def get_text():
     input_text = st.text_input("Prompt: ", value="", key="input")
-    return input_text
+    return input_text if input_text is not None else ""
 
-if st.session_state["file_uploaded"]:
+
+uploaded_file = st.file_uploader("Upload your file:")
+
+if uploaded_file is not None: 
+    file = process_file(uploaded_file)
+    vectorstore = embed_doc(file)
+    chain = get_chain(vectorstore)
+
     user_input = get_text()
-else:
-    user_input = None
 
-print(user_input)
+    if user_input and st.session_state["file_uploaded"]:
+        with st.spinner("Drafting response..."):
+            docs=vectorstore.similarity_search(user_input)
+            output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, QA_PROMPT=QA_PROMPT, CONDENSE_QUESTION_PROMPT=CONDENSE_QUESTION_PROMPT, template=_template).strip()
+            st.session_state.past.append(user_input)
+            st.session_state.generated.append(output)
 
-if user_input:
-    docs=vectorstore.similarity_search(user_input)
-    print(len(docs))
-    output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, QA_PROMPT=QA_PROMPT, CONDENSE_QUESTION_PROMPT=CONDENSE_QUESTION_PROMPT, template=_template)
-
-    st.session_state.past.append(user_input)
-    print(st.session_state.past)
-    st.session_state.generated.append(output)
-    print(st.session_state.past)
-
-if st.session_state["generated"]:
-    for i in range(len(st.session_state["generated"]) - 1, -1, -1):
-        message(st.session_state["generated"][i], avatar_style=None, key=str(i))
-        message(st.session_state["past"][i], is_user=True, avatar_style=None, key=str(i) + "_user")
+    if st.session_state["generated"]:
+        for i in range(len(st.session_state["generated"]) - 1, -1, -1):
+            message(st.session_state["generated"][i], avatar_style=None, key=str(i))
+            message(st.session_state["past"][i], is_user=True, avatar_style=None, key=str(i) + "_user")
