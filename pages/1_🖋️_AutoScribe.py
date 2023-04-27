@@ -138,20 +138,21 @@ def generate_index(faq_text):
     return index
 
 #@st.cache_data(ttl=None, max_entries=None, show_spinner=True, persist=None)
-def generate_output(index, query, word_count):
+def generate_output(index, query, word_count, tone):
     prompt_template = """You are a UK politician responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end. The word count is {word_count} words.
     Context: {context}
     Letter: {letter}
+    Tone: {tone}
     Answer:"""
 
     PROMPT = PromptTemplate(
-        template=prompt_template, input_variables=["context", "letter", "word_count"]
+        template=prompt_template, input_variables=["context", "letter", "word_count", "tone"]
     )
     llm = OpenAI(temperature=0)
     chain = LLMChain(llm=llm, prompt=PROMPT)
 
     docs = index.similarity_search(query, k=1)
-    inputs = [{"context": doc.page_content, "letter": query, "word_count": str(word_count)} for doc in docs]
+    inputs = [{"context": doc.page_content, "letter": query, "word_count": str(word_count), "tone": ', '.join(tone)} for doc in docs]
     output = chain.apply(inputs)[0]['text']
     return output
 
@@ -288,7 +289,7 @@ with tab1:
             if generate_button:
                 if hasattr(st.session_state, "faq_text") and hasattr(st.session_state, "letter_text"):
                     with st.spinner('Generating...'):
-                        st.session_state.generated_output = generate_output(index, st.session_state.letter_text, word_count)
+                        st.session_state.generated_output = generate_output(index, st.session_state.letter_text, word_count, tone)
                         st.experimental_rerun()
                     
 
