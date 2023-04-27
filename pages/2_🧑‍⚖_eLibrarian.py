@@ -7,6 +7,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
+import openai
 
 openai.api_key=st.secrets["OPENAI_API_KEY"]
 
