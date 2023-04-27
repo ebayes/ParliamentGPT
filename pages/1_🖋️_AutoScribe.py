@@ -3,6 +3,7 @@ import os
 import re
 import tempfile
 from datetime import date
+from io import BytesIO
 
 import boto3
 from docx import Document
