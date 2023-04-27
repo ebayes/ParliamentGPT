@@ -138,19 +138,19 @@ def generate_index(faq_text):
 
 #@st.cache_data(ttl=None, max_entries=None, show_spinner=True, persist=None)
 def generate_output(index, query, word_count):
-    prompt_template = """You are a UK Member of Parliament responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
-    {context}
+    prompt_template = """You are a UK politician responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end. The word count is {word_count} words.
+    Context: {context}
     Letter: {letter}
-    Answer (do not exceed {word_count} words):"""
+    Answer:"""
 
     PROMPT = PromptTemplate(
         template=prompt_template, input_variables=["context", "letter", "word_count"]
     )
-    llm = OpenAI(temperature=0, max_tokens=1000)
+    llm = OpenAI(temperature=0)
     chain = LLMChain(llm=llm, prompt=PROMPT)
 
     docs = index.similarity_search(query, k=1)
-    inputs = [{"context": doc.page_content, "letter": query, "word_count": word_count} for doc in docs]
+    inputs = [{"context": doc.page_content, "letter": query, "word_count": str(word_count)} for doc in docs]
     output = chain.apply(inputs)[0]['text']
     return output
 
