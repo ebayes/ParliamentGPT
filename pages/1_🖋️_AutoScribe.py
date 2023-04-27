@@ -138,11 +138,11 @@ def generate_index(faq_text):
 
 #@st.cache_data(ttl=None, max_entries=None, show_spinner=True, persist=None)
 def generate_output(index, query, word_count):
-    prompt_template = """You are a UK politician responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
+    prompt_template = """You are a UK politician responding to a letter from a constituent. Use context from your FAQs to draft a response. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end. Limit your word count to the length specified.
 
     Constituent letter: {letter}
     Context: {context}  
-    Length: Limit your response to {word_count} words
+    Length: Word count is {word_count} words
     Your response:"""
 
     PROMPT = PromptTemplate(
@@ -152,7 +152,7 @@ def generate_output(index, query, word_count):
     chain = LLMChain(llm=llm, prompt=PROMPT)
 
     docs = index.similarity_search(query, k=1)
-    inputs = [{"context": doc.page_content, "letter": query, "word_count": word_count} for doc in docs]
+    inputs = [{"context": doc.page_content, "letter": query, "word_count": str(word_count)} for doc in docs]
     output = chain.apply(inputs)[0]['text']
     return output
 
