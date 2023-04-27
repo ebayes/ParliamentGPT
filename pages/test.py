@@ -279,33 +279,33 @@ with tab1:
     with col2:
       
       output = st.text_area(label="Generated output:", height=680, key="output", value=st.session_state.generated_output)
-        if output is not None:
-            if st.session_state["generated_output"] != output:
-                st.session_state["generated_output"] = output
+      if output is not None:
+          if st.session_state["generated_output"] != output:
+              st.session_state["generated_output"] = output
 
-        g, c, d = st.columns([1, 1, 1])
+      g, c, d = st.columns([1, 1, 1])
 
-        with g:
-            generate_button = st.button("Generate")
-            if generate_button:
-                if hasattr(st.session_state, "faq_text") and hasattr(st.session_state, "letter_text"):
-                    with st.spinner('Generating...'):
-                        if st.session_state["generated_output"] != generate_output(st.session_state["index"], st.session_state["letter_text"], word_count):
-                            st.session_state["generated_output"] = generate_output(st.session_state["index"], st.session_state["letter_text"], word_count)
+      with g:
+          generate_button = st.button("Generate")
+          if generate_button:
+              if hasattr(st.session_state, "faq_text") and hasattr(st.session_state, "letter_text"):
+                  with st.spinner('Generating...'):
+                      if st.session_state["generated_output"] != generate_output(st.session_state["index"], st.session_state["letter_text"], word_count):
+                          st.session_state["generated_output"] = generate_output(st.session_state["index"], st.session_state["letter_text"], word_count)
 
-        with c:
-            clear_button = st.button("Clear")
-            if clear_button:
-                st.session_state.generated_output = ""
+      with c:
+          clear_button = st.button("Clear")
+          if clear_button:
+              st.session_state.generated_output = ""
 
-        with d:
-            if st.session_state.generated_output:
-                st.download_button(
-                    label="Download",
-                    data=generate_doc(st.session_state.doc_ID, st.session_state.letter_text, st.session_state.generated_output).getvalue(),
-                    file_name="draft_letter.docx",
-                    mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-                )
+      with d:
+          if st.session_state.generated_output:
+              st.download_button(
+                  label="Download",
+                  data=generate_doc(st.session_state.doc_ID, st.session_state.letter_text, st.session_state.generated_output).getvalue(),
+                  file_name="draft_letter.docx",
+                  mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+              )
 
 with tab2:
     st.markdown(
