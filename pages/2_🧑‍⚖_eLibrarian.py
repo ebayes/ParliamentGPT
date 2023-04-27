@@ -40,6 +40,7 @@ def embed_doc(filename):
         vectorstore_buffer = io.BytesIO()
         pickle.dump(vectorstore, vectorstore_buffer)
         vectorstore_buffer.seek(0)
+        print("embed")
         return vectorstore_buffer
 
 
@@ -86,7 +87,6 @@ def process_file(uploaded_file):
         print("no")
     with open(uploaded_file.name,"wb") as f:
         f.write(uploaded_file.getbuffer())
-        print(uploaded_file.name)
         st.write("File Uploaded successfully")
         with st.spinner("Document is being processed..."):
             st.session_state['vectorstore_buffer'] = embed_doc(uploaded_file.name)
