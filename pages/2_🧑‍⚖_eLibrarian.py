@@ -1,13 +1,16 @@
 import streamlit as st
 from streamlit_chat import message
-from langchain.chains import ChatVectorDBChain
+from langchain.chains import ConversationChain, ChatVectorDBChain
 from langchain.llms import OpenAI
 from langchain.prompts.prompt import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import UnstructuredFileLoader
-from langchain.vectorstores import Chroma
+from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import OpenAIEmbeddings
+import pickle
 import openai
+import io
+import os
 
 openai.api_key=st.secrets["OPENAI_API_KEY"]
 
