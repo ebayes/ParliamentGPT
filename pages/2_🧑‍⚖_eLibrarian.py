@@ -99,7 +99,7 @@ if uploaded_file is not None:
     if user_input and st.session_state["file_uploaded"]:
         with st.spinner("Drafting response..."):
             docs=vectorstore.similarity_search(user_input)
-            output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, QA_PROMPT=QA_PROMPT, CONDENSE_QUESTION_PROMPT=CONDENSE_QUESTION_PROMPT, template=_template).strip()
+            output = chain.run(input=user_input, vectorstore=vectorstore, context=docs[:2], chat_history=[], question=user_input, QA_PROMPT=QA_PROMPT, CONDENSE_QUESTION_PROMPT=CONDENSE_QUESTION_PROMPT).strip()
             st.session_state.past.append(user_input)
             st.session_state.generated.append(output)
 
