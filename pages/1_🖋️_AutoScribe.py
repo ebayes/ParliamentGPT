@@ -140,7 +140,7 @@ def generate_index(faq_text):
 def generate_output(index, query, word_count):
     prompt_template = """You are a UK Member of Parliament responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
     {context}
-    Letter: {question}
+    Letter: {letter}
     Answer (do not exceed {word_count} words):"""
 
     PROMPT = PromptTemplate(
