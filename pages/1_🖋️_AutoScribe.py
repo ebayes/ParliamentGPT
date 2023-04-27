@@ -268,7 +268,7 @@ with tab1:
             if faq_token_count + letter_token_count + output_token_count >= 3800:
                 st.warning('Your FAQ document or letter may be too long for the demo. A total of three pages between them is ideal', icon="⚠️")
 
-        # tone = st.multiselect('Select a tone:', ['Formal', 'Sympathetic', 'Informal', 'Pirate'], ['Formal'])
+        tone = st.multiselect('Select a tone:', ['Formal', 'Sympathetic', 'Informal', 'Pirate'], ['Formal'])
 
         word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 250)
 
