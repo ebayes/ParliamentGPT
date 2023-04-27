@@ -74,7 +74,7 @@ def process_file(uploaded_file):
 
 
 def get_text():
-    input_text = st.text_input("Prompt: ", value="", key="input")
+    input_text = st.text_input("Type your question here and click enter: ", value="", key="input")
     return input_text if input_text is not None else ""
 
 
