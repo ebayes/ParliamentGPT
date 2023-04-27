@@ -138,13 +138,10 @@ def generate_index(faq_text):
 
 #@st.cache_data(ttl=None, max_entries=None, show_spinner=True, persist=None)
 def generate_output(index, query, word_count):
-    prompt_template = """You are a UK politician responding to a letter from a constituent. Follow these steps and draft a {word_count} word response:
-
-    - Convert the letter into plaintext: {letter}
-    - Use context from your FAQs: {context}
-    - Limit your response to {word_count} words
-    - Structure the letter with the constituent's name, space between paragraphs, and do not sign your name.
-    Response:"""
+    prompt_template = """You are a UK Member of Parliament responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
+    {context}
+    Letter: {question}
+    Answer (do not exceed {word_count} words):"""
 
     PROMPT = PromptTemplate(
         template=prompt_template, input_variables=["context", "letter", "word_count"]
