@@ -102,7 +102,8 @@ def convert_to_text(file):
 
     if file_type in supported_text_formats:
         if file_type == '.docx':
-            text = docx2txt.process(file)
+            doc = Document(file)
+            text = "\n".join([para.text for para in doc.paragraphs])
         elif file_type == '.doc':
             doc = Document(file.read())
             text = "\n".join([para.text for para in doc.paragraphs])
