@@ -272,7 +272,7 @@ with tab1:
 
         word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 250)
 
-        doc_ID = st.text_input(label="Google Docs ID:", value = "https://docs.google.com/document/d/1qhd6sbq5aTeBz3WGATrgyEZ1X456mWsz3ZsJywngx4Q/edit") 
+        doc_ID = st.text_input(label="Google Docs ID:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         if doc_ID is not None:
             st.session_state.doc_ID = extract_google_docs_id(doc_ID)
 
