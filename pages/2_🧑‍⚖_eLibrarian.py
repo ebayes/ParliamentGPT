@@ -63,7 +63,7 @@ def embed_doc(filename):
 def get_chain(vectorstore):
     llm = OpenAI(temperature=0)
     qa_chain = ChatVectorDBChain.from_llm(
-        llm-llm,
+        llm=llm,
         vectorstore=vectorstore,
         template=QA_PROMPT,
         condense_question_prompt=CONDENSE_QUESTION_PROMPT,
