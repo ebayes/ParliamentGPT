@@ -95,16 +95,18 @@ def convert_to_text(file):
             for image in images:
                 file_text += image_to_text(image)
         return file_text
+    
     if file_type in supported_text_formats:
-        with open(file, 'rb') as file:
-            if file_type == '.docx':
-                text = docx2txt.process(file)
-            elif file_type == '.doc':
-                doc = Document(file)
-                text = "\n".join([para.text for para in doc.paragraphs])
-            else:
-                text = file.read()
+        if file_type == '.docx':
+            doc = Document(file)
+            text = "\n".join([para.text for para in doc.paragraphs])
+        elif file_type == '.doc':
+            doc = Document(file.read())
+            text = "\n".join([para.text for para in doc.paragraphs])
+        else:
+            text = file.read().decode()
         return text
+    
     # Convert image to text
     elif file_type in supported_image_formats:
         with Image.open(file, 'r') as file:
