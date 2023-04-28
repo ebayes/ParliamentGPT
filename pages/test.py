@@ -137,15 +137,14 @@ def generate_index(faq_text):
     index = Chroma.from_documents(texts, embeddings)
     return index
 
-def generate_output(index, query, tone, word_count):
-    prompt_template = """You are a UK politician responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response that is {word_count} words long. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
-    Context: {context}
+def generate_output(index, query, word_count):
+    prompt_template = """You are a UK politician responding to a letter from a constituent. 
+    Your FAQs: {context}
     Letter you are responding to: {letter}
-    Write it with the following tone: {tone}
-    Don't forget the word count should be {word_count} words!
+    Word limit: {word_count} words
     Answer:"""
     PROMPT = PromptTemplate(
-        template=prompt_template, input_variables=["context", "letter", "tone", "word_count"]
+        template=prompt_template, input_variables=["context", "letter", "word_count"]
     )
     llm = OpenAI(temperature=0, max_tokens=1000)
     chain = LLMChain(llm=llm, prompt=PROMPT)
@@ -248,7 +247,6 @@ with tab1:
             output_token_count = count_tokens(st.session_state.generated_output)
             if faq_token_count + letter_token_count + output_token_count >= 3800:
                 st.warning('Your FAQ document or letter may be too long for the demo. A total of three pages between them is ideal', icon="⚠️")
-        tone = st.multiselect('Select a tone:', ['Formal', 'Sympathetic', 'Informal', 'Pirate'], ['Formal'])
         word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 300)
         doc_ID = st.text_input(label="Google Docs ID:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         if doc_ID is not None:
@@ -264,7 +262,7 @@ with tab1:
             if generate_button:
                 if hasattr(st.session_state, "faq_text") and hasattr(st.session_state, "letter_text"):
                     with st.spinner('Generating...'):
-                        st.session_state.generated_output = generate_output(index, st.session_state.letter_text, tone, word_count)
+                        st.session_state.generated_output = generate_output(index, st.session_state.letter_text, word_count)
                         st.experimental_rerun()
                     
         with c:
