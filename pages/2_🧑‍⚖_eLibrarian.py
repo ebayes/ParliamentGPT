@@ -60,7 +60,7 @@ QA_PROMPT = PromptTemplate(template=template, input_variables=["question", "cont
 
 
 def get_chain(vectorstore):
-    llm = OpenAI(temperature=0)
+    llm = OpenAI(temperature=0, max_tokens = 4096)
     qa_chain = ChatVectorDBChain.from_llm(
         llm=llm,
         vectorstore=vectorstore,
