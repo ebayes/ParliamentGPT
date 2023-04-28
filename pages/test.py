@@ -65,6 +65,7 @@ st.markdown(
     AutoScribe reads letters and drafts responses based on your FAQs, all in one click! Simply upload your FAQs and the correspondence you are responding to and click generate. You can even download the output in your own template by creating a Google Docs template and sharing it with parliamentgpt@gmail.com. Just don't forget to proofread and edit before downloading!
     """
 )
+
 # general functions
 def image_to_text(image):
     with BytesIO() as output:
@@ -79,6 +80,7 @@ def image_to_text(image):
             print(item["Text"])
             text = text + " " + item["Text"]
     return text
+
 def convert_to_text(file):
     # Determine the file type
     file_type = os.path.splitext(file.name)[-1].lower()
@@ -117,11 +119,12 @@ def convert_to_text(file):
     # Unsupported file type
     else:
         raise ValueError("Unsupported file type.")
+        
 def string_to_temp_txt_file(content):
     with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as temp_file:
         temp_file.write(content)
         return temp_file.name
-#@st.cache_data(ttl=None, max_entries=None, show_spinner=True, persist=None)
+
 def generate_index(faq_text):
     temp_file_path = string_to_temp_txt_file(faq_text)
     loader = TextLoader(temp_file_path)
@@ -131,7 +134,7 @@ def generate_index(faq_text):
     embeddings = OpenAIEmbeddings()
     index = Chroma.from_documents(texts, embeddings)
     return index
-#@st.cache_data(ttl=None, max_entries=None, show_spinner=True, persist=None)
+
 def generate_output(index, query, tone, word_count):
     prompt_template = """You are a UK politician responding to a letter from a constituent. First, convert the constituent's letter to plaintext then use context from your FAQs to draft a response that is {word_count} words long. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end. The word count should be {word_count} words.
     Context: {context}
@@ -146,12 +149,12 @@ def generate_output(index, query, tone, word_count):
     docs = index.similarity_search(query, k=1)
     inputs = [{"context": doc.page_content, "letter": query, "tone": ', '.join(tone), "word_count": word_count} for doc in docs]
     output = chain.apply(inputs)[0]['text']
-    return output
-# streamlit button functions
+    return output.strip()
+
 def print_output():
     article = st.session_state.generated_output
     return article
-#@st.cache_data(ttl=None, max_entries=None, show_spinner=True, persist=None)
+
 def generate_address(letter):
     response = openai.ChatCompletion.create(
         model = "gpt-3.5-turbo",
@@ -162,6 +165,7 @@ def generate_address(letter):
     )
     constituent_address = response['choices'][0]['message']['content']
     return constituent_address
+
 def generate_doc(doc_ID, letter, output):
     c_address = generate_address(letter)
     # Use the Google Drive API to create a copy of the document
@@ -201,6 +205,7 @@ def generate_doc(doc_ID, letter, output):
     doc.save(doc_bytes)
     doc_bytes.seek(0)
     return doc_bytes 
+
 def extract_google_docs_id(doc_ID: str) -> str:
     pattern = r'd/([\w-]+)/'
     match = re.search(pattern, doc_ID)
@@ -209,12 +214,18 @@ def extract_google_docs_id(doc_ID: str) -> str:
     else:
         st.warning('Add template URL and press enter', icon="⚠️")
         # raise ValueError("Add Google Docs URL")
+
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+
 def count_tokens(string: str) -> int:
     tokens = len(encoding.encode(string))
     return tokens
+
+
 # layout
+
 tab1, tab2 = st.tabs(["AutoScribe", "Instructions"])
+
 with tab1:
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -239,8 +250,8 @@ with tab1:
         doc_ID = st.text_input(label="Google Docs ID:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         if doc_ID is not None:
             st.session_state.doc_ID = extract_google_docs_id(doc_ID)
-    with col2:
-        
+    
+    with col2:    
         output = st.text_area(label="Generated output:", height=680, key="output", value=st.session_state.generated_output)
         if output is not None:
             st.session_state["generated_output"] = st.session_state.generated_output
