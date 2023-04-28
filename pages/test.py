@@ -35,18 +35,15 @@ if "generated_output" not in st.session_state:
     st.session_state["generated_output"] = ""
 
 # API keys
-st.write("OPENAI_API_KEY =", st.secrets["OPENAI_API_KEY"])
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+openai.api_key = OPENAI_API_KEY
+aws_access_key_id = st.secrets["AWS_ACCESS_KEY_ID"]
+aws_secret_access_key = st.secrets["AWS_SECRET_ACCESS_KEY"]
+aws_default_region = st.secrets["AWS_DEFAULT_REGION"]
+
+# API keys and creds
 openai.api_key=st.secrets["OPENAI_API_KEY"]
-st.write("aws_access_key_id =", st.secrets["AWS_ACCESS_KEY_ID"])
-st.write("aws_secret_access_key =", st.secrets["AWS_SECRET_ACCESS_KEY"])
-st.write("aws_default_region =", st.secrets["AWS_DEFAULT_REGION"])
-
-# creds
-client = boto3.client('textract',region_name=aws_default_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
-
-openai.api_key = os.getenv("OPENAI_API_KEY")
-aws_access_key_id = os.getenv("aws_access_key_id")
-aws_secret_access_key = os.getenv("aws_secret_access_key")
+client = boto3.client('textract', region_name=st.secrets["AWS_DEFAULT_REGION"], aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"], aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"])
 
 credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"],
@@ -55,7 +52,10 @@ credentials = service_account.Credentials.from_service_account_info(
         "https://www.googleapis.com/auth/documents",
     ],
 )
-conn = connect(credentials=credentials)
+
+drive_service = build('drive', 'v3', credentials=credentials)
+docs_service = build('docs', 'v1', credentials=credentials)
+
 # page title
 st.set_page_config(layout="wide", page_icon="🏛", page_title="ParliamentGPT")
 st.title("🖋️ AutoScribe")
