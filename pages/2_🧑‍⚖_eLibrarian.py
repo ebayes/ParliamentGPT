@@ -26,7 +26,7 @@ def embed_doc(filename):
         raw_documents = loader.load()
         # Split text
         text_splitter = TextSplitter(
-            chunk_size=500,
+            chunk_size=100,
             chunk_overlap=0,
             length_function=len
         )
