@@ -15,6 +15,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from pdf2image import convert_from_path
 from PyPDF2 import PdfReader
+
 # Langchain libraries
 from langchain.chains import LLMChain
 from langchain.document_loaders import TextLoader
@@ -23,6 +24,7 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
+
 # Initialize session state attributes
 if "letter_text" not in st.session_state:
     st.session_state["letter_text"] = ""
@@ -169,12 +171,12 @@ def generate_address(letter):
 def generate_doc(doc_ID, letter, output):
     c_address = generate_address(letter)
     # Use the Google Drive API to create a copy of the document
-    drive_service = build('drive', 'v3', credentials=creds)
+    drive_service = build('drive', 'v3', credentials=credentials)
     copy_request = drive_service.files().copy(fileId=doc_ID)
     copied_doc = copy_request.execute()
     document_id = copied_doc['id']
     # Use the Google Docs API to retrieve the copied document
-    docs_service = build('docs', 'v1', credentials=creds)
+    docs_service = build('docs', 'v1', credentials=credentials)
     doc = docs_service.documents().get(documentId=document_id).execute()
     # Define the text to replace and its replacement
     replace_dict = {
