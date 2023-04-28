@@ -154,7 +154,7 @@ def generate_output(index, query, word_count, tone):
     docs = index.similarity_search(query, k=1)
     inputs = [{"context": doc.page_content, "letter": query, "word_count": str(word_count), "tone": ', '.join(tone)} for doc in docs]
     output = chain.apply(inputs)[0]['text']
-    return output
+    return output.strip()
 
 # streamlit button functions
 def print_output():
