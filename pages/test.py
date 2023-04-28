@@ -138,7 +138,7 @@ def generate_index(faq_text):
     return index
 
 def generate_output(index, query, word_count):
-    prompt_template = """You are a UK politician responding to a letter from a constituent. 
+    prompt_template = """You are a UK politician responding to a letter from a constituent. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
     Your FAQs: {context}
     Letter you are responding to: {letter}
     Word limit: {word_count} words
