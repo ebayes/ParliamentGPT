@@ -231,13 +231,13 @@ tab1, tab2 = st.tabs(["AutoScribe", "Instructions"])
 with tab1:
     col1, col2 = st.columns([1, 1])
     with col1:
-        faq = st.file_uploader("FAQs")
+        faq = st.file_uploader("Upload your FAQs:")
         if faq is not None:
             with st.spinner('Processing'):
                 st.session_state.faq_text = convert_to_text(faq)
                 index = generate_index(st.session_state.faq_text)
             st.success('FAQs uploaded!', icon="✅")
-        letter = st.file_uploader("Upload letter")
+        letter = st.file_uploader("Upload the letter you are responding to:")
         if letter is not None:
             with st.spinner('Processing'):
                 st.session_state.letter_text = convert_to_text(letter)
@@ -248,7 +248,7 @@ with tab1:
             if faq_token_count + letter_token_count + output_token_count >= 3800:
                 st.warning('Your FAQ document or letter may be too long for the demo. A total of three pages between them is ideal', icon="⚠️")
         word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 300)
-        doc_ID = st.text_input(label="Google Docs ID:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
+        doc_ID = st.text_input(label="Your Google Docs Template:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         if doc_ID is not None:
             st.session_state.doc_ID = extract_google_docs_id(doc_ID)
     
