@@ -1,4 +1,5 @@
 import io
+from io import BytesIO
 import os
 import re
 import tempfile
