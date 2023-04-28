@@ -3,7 +3,7 @@ from streamlit_chat import message
 from langchain.chains import ConversationChain, ChatVectorDBChain
 from langchain.llms import OpenAI
 from langchain.prompts.prompt import PromptTemplate
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import OpenAIEmbeddings
@@ -25,7 +25,7 @@ def embed_doc(filename):
         loader = UnstructuredFileLoader(filename)
         raw_documents = loader.load()
         # Split text
-        text_splitter = RecursiveCharacterTextSplitter(
+        text_splitter = CharacterTextSplitter(
             chunk_size=500,
             chunk_overlap=0,
             length_function=len
