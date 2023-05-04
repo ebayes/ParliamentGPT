@@ -146,7 +146,7 @@ def generate_output(index, query, word_count):
     PROMPT = PromptTemplate(
         template=prompt_template, input_variables=["context", "letter", "word_count"]
     )
-    llm = OpenAI(model="gpt-4-32k", temperature=0)
+    llm = OpenAI(temperature=0)
     chain = LLMChain(llm=llm, prompt=PROMPT)
     docs = index.similarity_search(query, k=1)
     inputs = [{"context": doc.page_content, "letter": query, "word_count": word_count} for doc in docs]
@@ -217,7 +217,7 @@ def extract_google_docs_id(doc_ID: str) -> str:
         st.warning('Add template URL and press enter', icon="⚠️")
         # raise ValueError("Add Google Docs URL")
 
-encoding = tiktoken.encoding_for_model("gpt-4-32k")
+encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 
 def count_tokens(string: str) -> int:
     tokens = len(encoding.encode(string))
