@@ -15,6 +15,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from pdf2image import convert_from_path
 from PyPDF2 import PdfReader
+
 # Langchain libraries
 from langchain.chains import LLMChain
 from langchain.document_loaders import TextLoader
@@ -23,6 +24,7 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
+
 # Initialize session state attributes
 if "letter_text" not in st.session_state:
     st.session_state["letter_text"] = ""
@@ -34,15 +36,18 @@ if "doc_ID" not in st.session_state:
     st.session_state["doc_ID"] = ""
 if "generated_output" not in st.session_state:
     st.session_state["generated_output"] = ""
+
 # API keys
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 openai.api_key = OPENAI_API_KEY
 aws_access_key_id = st.secrets["AWS_ACCESS_KEY_ID"]
 aws_secret_access_key = st.secrets["AWS_SECRET_ACCESS_KEY"]
 aws_default_region = st.secrets["AWS_DEFAULT_REGION"]
+
 # API keys and creds
 openai.api_key=st.secrets["OPENAI_API_KEY"]
 client = boto3.client('textract', region_name=st.secrets["AWS_DEFAULT_REGION"], aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"], aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"])
+
 credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"],
     scopes=[
@@ -50,8 +55,10 @@ credentials = service_account.Credentials.from_service_account_info(
         "https://www.googleapis.com/auth/documents",
     ],
 )
+
 drive_service = build('drive', 'v3', credentials=credentials)
 docs_service = build('docs', 'v1', credentials=credentials)
+
 # page title
 st.set_page_config(layout="wide", page_icon="🏛", page_title="ParliamentGPT")
 st.title("🖋️ AutoScribe")
@@ -60,6 +67,7 @@ st.markdown(
     AutoScribe reads letters and drafts responses based on your FAQs, all in one click! Simply upload your FAQs and the correspondence you are responding to and click generate. You can even download the output in your own template by creating a Google Docs template and sharing it with parliamentgpt@gmail.com. Just don't forget to proofread and edit before downloading!
     """
 )
+
 # general functions
 def image_to_text(image):
     with BytesIO() as output:
@@ -74,6 +82,7 @@ def image_to_text(image):
             print(item["Text"])
             text = text + " " + item["Text"]
     return text
+
 def convert_to_text(file):
     # Determine the file type
     file_type = os.path.splitext(file.name)[-1].lower()
@@ -117,6 +126,7 @@ def string_to_temp_txt_file(content):
     with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as temp_file:
         temp_file.write(content)
         return temp_file.name
+
 def generate_index(faq_text):
     temp_file_path = string_to_temp_txt_file(faq_text)
     loader = TextLoader(temp_file_path)
@@ -126,6 +136,7 @@ def generate_index(faq_text):
     embeddings = OpenAIEmbeddings()
     index = Chroma.from_documents(texts, embeddings)
     return index
+
 def generate_output(index, query, word_count):
     prompt_template = """You are a UK politician responding to a letter from a constituent. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
     Your FAQs: {context}
@@ -141,9 +152,11 @@ def generate_output(index, query, word_count):
     inputs = [{"context": doc.page_content, "letter": query, "word_count": word_count} for doc in docs]
     output = chain.apply(inputs)[0]['text']
     return output.strip()
+
 def print_output():
     article = st.session_state.generated_output
     return article
+
 def generate_address(letter):
     response = openai.ChatCompletion.create(
         model = "gpt-3.5-turbo",
@@ -154,6 +167,7 @@ def generate_address(letter):
     )
     constituent_address = response['choices'][0]['message']['content']
     return constituent_address
+
 def generate_doc(doc_ID, letter, output):
     c_address = generate_address(letter)
     # Use the Google Drive API to create a copy of the document
@@ -193,6 +207,7 @@ def generate_doc(doc_ID, letter, output):
     doc.save(doc_bytes)
     doc_bytes.seek(0)
     return doc_bytes 
+
 def extract_google_docs_id(doc_ID: str) -> str:
     pattern = r'd/([\w-]+)/'
     match = re.search(pattern, doc_ID)
@@ -201,23 +216,27 @@ def extract_google_docs_id(doc_ID: str) -> str:
     else:
         st.warning('Add template URL and press enter', icon="⚠️")
         # raise ValueError("Add Google Docs URL")
+
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+
 def count_tokens(string: str) -> int:
     tokens = len(encoding.encode(string))
     return tokens
+
+
 # layout
+
 tab1, tab2 = st.tabs(["AutoScribe", "Instructions"])
+
 with tab1:
     col1, col2 = st.columns([1, 1])
     with col1:
-        faq = st.file_uploader("FAQs")
         faq = st.file_uploader("Upload your FAQs:")
         if faq is not None:
             with st.spinner('Processing'):
                 st.session_state.faq_text = convert_to_text(faq)
                 index = generate_index(st.session_state.faq_text)
             st.success('FAQs uploaded!', icon="✅")
-        letter = st.file_uploader("Upload letter")
         letter = st.file_uploader("Upload the letter you are responding to:")
         if letter is not None:
             with st.spinner('Processing'):
@@ -229,11 +248,10 @@ with tab1:
             if faq_token_count + letter_token_count + output_token_count >= 3800:
                 st.warning('Your FAQ document or letter may be too long for the demo. A total of three pages between them is ideal', icon="⚠️")
         word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 300)
-        doc_ID = st.text_input(label="Google Docs ID:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         doc_ID = st.text_input(label="Your Google Docs Template:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         if doc_ID is not None:
             st.session_state.doc_ID = extract_google_docs_id(doc_ID)
-
+    
     with col2:    
         output = st.text_area(label="Generated output:", height=680, key="output", value=st.session_state.generated_output)
         if output is not None:
