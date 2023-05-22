@@ -61,10 +61,10 @@ docs_service = build('docs', 'v1', credentials=credentials)
 
 # page title
 st.set_page_config(layout="wide", page_icon="🏛", page_title="ParliamentGPT")
-st.title("🖋️ AutoScribe")
+st.title("🖋️ ParliamentGPT")
 st.markdown(
     """
-    AutoScribe reads letters and drafts responses based on your FAQs, all in one click! Simply upload your FAQs and the correspondence you are responding to and click generate. You can even download the output in your own template by creating a Google Docs template and sharing it with parliamentgpt@gmail.com. Just don't forget to proofread and edit before downloading!
+    ParliamentGPT reads letters and drafts responses based on your FAQs, all in one click! Simply upload your FAQs and the correspondence you are responding to and click generate. You can even download the output in your own template by creating a Google Docs template and sharing it with parliamentgpt@gmail.com. Just don't forget to proofread and edit before downloading!
     """
 )
 
@@ -137,19 +137,20 @@ def generate_index(faq_text):
     index = Chroma.from_documents(texts, embeddings)
     return index
 
-def generate_output(index, query, word_count):
+def generate_output(index, query, word_count, tone):
     prompt_template = """You are a UK politician responding to a letter from a constituent. Address the constituent by their name, leave a space between each paragraph, and do not include your name at the end.
     Your FAQs: {context}
     Letter you are responding to: {letter}
     Word limit: {word_count} words
+    Tone: {tone}
     Answer:"""
     PROMPT = PromptTemplate(
-        template=prompt_template, input_variables=["context", "letter", "word_count"]
+        template=prompt_template, input_variables=["context", "letter", "word_count", "tone"]
     )
     llm = OpenAI(temperature=0, max_tokens=1000)
     chain = LLMChain(llm=llm, prompt=PROMPT)
     docs = index.similarity_search(query, k=1)
-    inputs = [{"context": doc.page_content, "letter": query, "word_count": word_count} for doc in docs]
+    inputs = [{"context": doc.page_content, "letter": query, "word_count": str(word_count), "tone": ', '.join(tone)} for doc in docs]
     output = chain.apply(inputs)[0]['text']
     return output.strip()
 
@@ -226,7 +227,7 @@ def count_tokens(string: str) -> int:
 
 # layout
 
-tab1, tab2 = st.tabs(["AutoScribe", "Instructions"])
+tab1, tab2 = st.tabs(["ParliamentGPT", "Instructions"])
 
 with tab1:
     col1, col2 = st.columns([1, 1])
@@ -248,6 +249,7 @@ with tab1:
             if faq_token_count + letter_token_count + output_token_count >= 3800:
                 st.warning('Your FAQ document or letter may be too long for the demo. A total of three pages between them is ideal', icon="⚠️")
         word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 300)
+        tone = st.multiselect('Select a tone:', ['Formal', 'Sympathetic', 'Informal', 'Pirate'], ['Formal'])
         doc_ID = st.text_input(label="Your Google Docs Template:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         if doc_ID is not None:
             st.session_state.doc_ID = extract_google_docs_id(doc_ID)
@@ -262,7 +264,7 @@ with tab1:
             if generate_button:
                 if hasattr(st.session_state, "faq_text") and hasattr(st.session_state, "letter_text"):
                     with st.spinner('Generating...'):
-                        st.session_state.generated_output = generate_output(index, st.session_state.letter_text, word_count)
+                        st.session_state.generated_output = generate_output(index, st.session_state.letter_text, word_count, tone)
                         st.experimental_rerun()
                     
         with c:
@@ -282,11 +284,11 @@ with tab1:
 with tab2:
     st.markdown(
         """
-        1. ℹ️ **Upload your FAQs.** Here is a [sample](https://docs.google.com/document/d/1qZ3mjCUtM_DudBfPx1hZg6c8-G_5yF0YmTOBRerpcag/edit) of what this could look like. You don't need to worry about copying and pasting specific FAQs depending on the topic, AutoScribe's clever AI will find the right FAQ from the whole document.
-        2. 📬 **Upload the letter you are responding to.** Here is a [sample](https://docs.google.com/document/d/1P9bmBsapYkklPTa3XX8wRuYeeuUgnGq8XUvL_IX3PI0/edit) of what this could look like. Autoscribe can extract text from images or scanned, even if it's handwritten!
+        1. ℹ️ **Upload your FAQs.** Here is a [sample](https://docs.google.com/document/d/1qZ3mjCUtM_DudBfPx1hZg6c8-G_5yF0YmTOBRerpcag/edit) of what this could look like. You don't need to worry about copying and pasting specific FAQs depending on the topic, ParliamentGPT's clever AI will find the right FAQ from the whole document.
+        2. 📬 **Upload the letter you are responding to.** Here is a [sample](https://docs.google.com/document/d/1P9bmBsapYkklPTa3XX8wRuYeeuUgnGq8XUvL_IX3PI0/edit) of what this could look like. ParliamentGPT can extract text from images or scanned, even if it's handwritten!
         3. 🎛 **Adjust the tone and word count.** You can tweak the settings using the dropdown boxes and slider.
         4. 🤖 **Click generate!**  Your letter will be displayed in the output box on the right.
-        5. 🤓 **Proofread and edit**. Don't forget that AutoScribe is just a tool, and sometimes it gets things wrong! Don't forget to proofread and edit your output before using it.
+        5. 🤓 **Proofread and edit**. Don't forget that ParliamentGPT is just a tool, and sometimes it gets things wrong! Don't forget to proofread and edit your output before using it.
         
         [Optional] If you would like to download the output in your own template, you can follow the additional steps below.
         1. 📝 **Create a letter template in Google Docs.** The template must include placeholders {{letter_content}}, {{respondent_address}}, {{date}} where you want the content, respondent's address and date to go. For an example, see [here](https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit).
