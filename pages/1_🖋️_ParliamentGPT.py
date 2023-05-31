@@ -243,12 +243,7 @@ with tab1:
             with st.spinner('Processing'):
                 st.session_state.letter_text = convert_to_text(letter)
             st.success('Letter uploaded!', icon="✅")
-            faq_token_count = count_tokens(st.session_state.faq_text)
-            letter_token_count = count_tokens(st.session_state.letter_text)
-            output_token_count = count_tokens(st.session_state.generated_output)
-            if faq_token_count + letter_token_count + output_token_count >= 3800:
-                st.warning('Your FAQ document or letter may be too long for the demo. A total of three pages between them is ideal', icon="⚠️")
-        word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 300)
+        word_count = st.slider("Choose a word count:", min_value = 200, max_value = 400, value = 350)
         tone = st.multiselect('Select a tone:', ['Formal', 'Sympathetic', 'Informal', 'Pirate'], ['Formal'])
         doc_ID = st.text_input(label="Your Google Docs Template:", value = "https://docs.google.com/document/d/17la5aNiLcFGdk43JrTvXBVVW9561Xuc0s0896pczUlU/edit") 
         if doc_ID is not None:
